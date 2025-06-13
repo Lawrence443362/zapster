@@ -18,7 +18,7 @@ class TagResource extends JsonResource
         return [
             "id"=> $this->id,
             "name"=> $this->name,
-            "createAt"=> Carbon::parse($this->creeate_at)->format("Y-m-d H:i:s"),
+            "createAt"=> Carbon::parse($this->created_at)->format("Y-m-d H:i:s"),
         ];
     }
 }

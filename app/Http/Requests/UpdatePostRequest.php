@@ -17,6 +17,11 @@ class UpdatePostRequest extends FormRequest
         return Auth::user()->id === $post->user_id;
     }
 
+    /**
+     * Summary of failedAuthorization
+     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     * @return never
+     */
     protected function failedAuthorization()
     {
         throw new HttpResponseException(response()->json([

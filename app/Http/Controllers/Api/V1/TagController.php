@@ -7,6 +7,8 @@ use App\Http\Resources\V1\TagResource;
 use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
+use App\QueryFilters\TagFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class TagController extends Controller
 {
@@ -15,7 +17,12 @@ class TagController extends Controller
      */
     public function index()
     {
-        return TagResource::collection(Tag::paginate(15));
+        $tags = QueryBuilder::for(Tag::class)
+            ->allowedSorts(["name", "created_at", "id"])
+            ->allowedFilters(TagFilter::filters())
+            ->paginate(15);
+
+        return TagResource::collection($tags);
     }
 
     /**
