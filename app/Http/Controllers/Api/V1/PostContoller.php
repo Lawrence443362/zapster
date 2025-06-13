@@ -15,7 +15,7 @@ class PostContoller extends Controller
      */
     public function index()
     {
-        return PostResource::collection(Post::all());
+        return PostResource::collection(Post::paginate(15));
     }
 
     /**
