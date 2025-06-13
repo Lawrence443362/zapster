@@ -33,3 +33,9 @@ assets-install:
 
 assets-build:
 	docker-compose exec node-cli npm run build
+
+
+# ------------
+
+generate_doc_for_models:
+    php artisan ide-helper:models
