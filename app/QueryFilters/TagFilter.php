@@ -11,16 +11,8 @@ class TagFilter
         return [
             AllowedFilter::partial('name'),
             AllowedFilter::exact('id'),
-            AllowedFilter::callback(
-                'date_from',
-                fn($query, $value) =>
-                $query->where('created_at', '>=', $value)
-            ),
-            AllowedFilter::callback(
-                'date_to',
-                fn($query, $value) =>
-                $query->where('created_at', '<=', $value)
-            ),
+            DateFilter::date_from(),
+            DateFilter::date_to()
         ];
     }
 }
