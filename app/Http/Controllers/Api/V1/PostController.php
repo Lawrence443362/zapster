@@ -7,6 +7,10 @@ use App\Http\Resources\V1\PostResource;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\QueryFilters\PostFilter;
+use App\QueryFilters\UserFilter;
+use Spatie\QueryBuilder\AllowedInclude;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class PostController extends Controller
 {
@@ -15,7 +19,11 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('user:id,name')->paginate(15);
+        $query = Post::with(["user:id,name"]);
+        $posts = QueryBuilder::for($query)
+            ->allowedSorts(["id", "title", "created_at"])
+            ->allowedFilters(PostFilter::filters())
+            ->paginate(15);
 
         return PostResource::collection($posts);
     }
