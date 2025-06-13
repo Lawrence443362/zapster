@@ -18,11 +18,12 @@ class PostController extends Controller
      */
     public function index()
     {
+        $per_page = request('per_page', 15);
         $query = Post::with(["user:id,name"]);
         $posts = QueryBuilder::for($query)
             ->allowedSorts(["id", "title", "created_at"])
             ->allowedFilters(PostFilter::filters())
-            ->paginate(15);
+            ->paginate($per_page);
 
         return PostResource::collection($posts);
     }

@@ -17,10 +17,11 @@ class TagController extends Controller
      */
     public function index()
     {
+        $per_page = request("per_page", 15);
         $tags = QueryBuilder::for(Tag::class)
             ->allowedSorts(["name", "created_at", "id"])
             ->allowedFilters(TagFilter::filters())
-            ->paginate(15);
+            ->paginate($per_page);
 
         return TagResource::collection($tags);
     }
