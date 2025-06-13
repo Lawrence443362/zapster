@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class UpdatePostRequest extends FormRequest
 {
@@ -11,7 +13,15 @@ class UpdatePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $post = $this->route("post");
+        return Auth::user()->id === $post->user_id;
+    }
+
+    protected function failedAuthorization()
+    {
+        throw new HttpResponseException(response()->json([
+            'message' => 'Access denied',
+        ], 403));
     }
 
     /**
