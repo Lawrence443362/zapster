@@ -14,6 +14,7 @@ build:
 	make assets-install
 	make assets-build
 	make migrate
+    # php artisan db:seed
 
 php-deps-install:
 	docker compose exec composer composer install
