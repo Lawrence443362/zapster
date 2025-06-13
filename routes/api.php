@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\PostContoller;
+use App\Http\Controllers\Api\V1\PostController;
 use App\Http\Controllers\Api\V1\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +22,6 @@ Route::prefix('/v1')
     ->group(function () {
         Route::get('auth/logout', [AuthController::class, 'logout'])->name('user.logout');
         Route::apiResource('/tags', TagController::class);
-        Route::apiResource('/posts', PostContoller::class);
+        Route::apiResource('/posts', PostController::class);
     });
 

@@ -15,7 +15,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return TagResource::collection(Tag::all());
+        return TagResource::collection(Tag::paginate(15));
     }
 
     /**
@@ -23,7 +23,9 @@ class TagController extends Controller
      */
     public function store(StoreTagRequest $request)
     {
-        Tag::create($request->all());
+        $tag = Tag::create($request->validated());
+
+        return new TagResource($tag);
     }
 
     /**
@@ -39,7 +41,7 @@ class TagController extends Controller
      */
     public function update(UpdateTagRequest $request, Tag $tag)
     {
-        $tag->update($request->all());
+        $tag->update($request->validated());
 
         return new TagResource($tag);
     }
@@ -52,7 +54,7 @@ class TagController extends Controller
         $tag->delete();
 
         return response()->json([
-            'message' => 'Category removed'
+            'message' => 'Tag removed'
         ]);
     }
 }

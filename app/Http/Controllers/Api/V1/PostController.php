@@ -7,15 +7,18 @@ use App\Http\Resources\V1\PostResource;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Illuminate\Http\Request;
 
-class PostContoller extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return PostResource::collection(Post::paginate(15));
+        $posts = Post::with('user:id,name')->paginate(15);
+
+        return PostResource::collection($posts);
     }
 
     /**
@@ -23,14 +26,21 @@ class PostContoller extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        Post::create($request->all());
+        $post =
+            $request
+                ->user()
+                ->posts()
+                ->create($request->validated());
+
+        return new PostResource($post->load('user:id,name'));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Post $post)
+    public function show(int $id)
     {
+        $post = Post::with("user:id,name")->findOrFail( $id);
         return new PostResource($post);
     }
 
@@ -39,7 +49,7 @@ class PostContoller extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->all());
+        $post->update($request->validated());
 
         return new PostResource($post);
     }
