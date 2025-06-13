@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Post;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 
-class DeletePostRequest extends FormRequest
+class UpdatePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -37,7 +37,9 @@ class DeletePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "title" => ["string", "max:255"],
+            "description" => ["string"],
+            "status" => ["string", "in:active,inactive"],
         ];
     }
 }

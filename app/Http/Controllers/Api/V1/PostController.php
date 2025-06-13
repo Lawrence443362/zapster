@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DeletePostRequest;
+use App\Http\Requests\Post\DeletePostRequest;
 use App\Http\Resources\V1\PostResource;
 use App\Models\Post;
-use App\Http\Requests\StorePostRequest;
-use App\Http\Requests\UpdatePostRequest;
+use App\Http\Requests\Post\StorePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 use App\QueryFilters\PostFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
