@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Models\PostStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdatePostRequest extends FormRequest
 {
@@ -39,7 +41,7 @@ class UpdatePostRequest extends FormRequest
         return [
             "title" => ["string", "max:255"],
             "description" => ["string"],
-            "status" => ["string", "in:active,inactive"],
+            "status" => ["string", new Enum(PostStatus::class)],
         ];
     }
 }

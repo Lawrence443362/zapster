@@ -37,6 +37,9 @@ class Post extends Model
         "status"
     ];
 
+    protected $casts = [
+        "status" => PostStatus::class,
+    ];
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
