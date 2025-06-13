@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\TagResource;
 use App\Models\Tag;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\UpdateTagRequest;
@@ -14,9 +15,7 @@ class TagController extends Controller
      */
     public function index()
     {
-        return response()->json([
-            "data" => Tag::all()
-        ]);
+        return TagResource::collection(Tag::all());
     }
 
     /**
@@ -32,7 +31,7 @@ class TagController extends Controller
      */
     public function show(Tag $tag)
     {
-        return $tag;
+        return new TagResource($tag);
     }
 
     /**
@@ -42,7 +41,7 @@ class TagController extends Controller
     {
         $tag->update($request->all());
 
-        return $tag;
+        return new TagResource($tag);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\PostResource;
 use App\Models\Post;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -14,9 +15,7 @@ class PostContoller extends Controller
      */
     public function index()
     {
-        return response()->json([
-            "data" => Post::all(),
-        ]);
+        return PostResource::collection(Post::all());
     }
 
     /**
@@ -32,7 +31,7 @@ class PostContoller extends Controller
      */
     public function show(Post $post)
     {
-        return $post;
+        return new PostResource($post);
     }
 
     /**
@@ -42,7 +41,7 @@ class PostContoller extends Controller
     {
         $post->update($request->all());
 
-        return $post;
+        return new PostResource($post);
     }
 
     /**
