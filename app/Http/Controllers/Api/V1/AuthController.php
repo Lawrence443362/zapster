@@ -16,12 +16,7 @@ class AuthController extends Controller
     {
         $user = User::create($request->all());
 
-        $token = $user->createToken('api-token')->plainTextToken;
-
-        return response()->json([
-            "user" => new UserResource($user),
-            "token" => $token
-        ]);
+        return $this->respondWithToken($user);
     }
 
     public function login(LoginUserRequest $request)
@@ -39,12 +34,7 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        $token = $user->createToken('api-token')->plainTextToken;
-
-        return response()->json([
-            "user" => new UserResource($user),
-            "token" => $token
-        ]);
+        return $this->respondWithToken($user);
     }
 
     public function logout(Request $request)
@@ -53,6 +43,16 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Logged out'
+        ]);
+    }
+
+    private function respondWithToken(User $user)
+    {
+        $token = $user->createToken('api-token')->plainTextToken;
+
+        return response()->json([
+            "user" => new UserResource($user),
+            "token" => $token
         ]);
     }
 }
