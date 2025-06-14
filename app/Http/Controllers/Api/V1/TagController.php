@@ -31,7 +31,7 @@ class TagController extends Controller
      */
     public function store(StoreTagRequest $request)
     {
-        $tag = Tag::create($request->validated());
+        $tag = Tag::firstOrCreate($request->validated());
 
         return new TagResource($tag);
     }
