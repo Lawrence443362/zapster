@@ -19,7 +19,7 @@ Route::prefix('/v1')
     ->group(function () {
         Route::get('/auth/logout', [AuthController::class, 'logout'])->name('user.logout');
         Route::get('/auth/profile', fn(Request $request) => Auth::user());
-        Route::apiResource('tags', TagController::class);
+        Route::apiResource('tags', TagController::class, )->except(['store', 'update', 'destroy']);
         Route::apiResource('posts', PostController::class);
     });
 
