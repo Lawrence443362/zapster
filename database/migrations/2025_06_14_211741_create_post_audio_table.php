@@ -21,10 +21,11 @@ return new class extends Migration {
 
             $table->unsignedBigInteger('size');
             $table->string('mime_type');
+            $table->string('extension', 10);
             $table->float('duration')->nullable();
 
             $table->timestamps();
-            $table->softDeletes(); 
+            $table->softDeletes();
 
             $table->index('post_id');
             $table->unique(['disk', 'folder', 'stored_name']);

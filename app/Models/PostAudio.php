@@ -9,6 +9,8 @@ class PostAudio extends Model
 {
     //
 
+    protected $table = 'post_audios';
+
     protected $fillable = [
         'post_id',
         'original_name',
@@ -17,6 +19,7 @@ class PostAudio extends Model
         'disk',
         'size',
         'mime_type',
+        'extension',
         'duration',
     ];
 
@@ -33,7 +36,7 @@ class PostAudio extends Model
 
     public function path(): string
     {
-        return $this->folder . '/' . $this->stored_name;
+        return "{$this->folder}/{$this->stored_name}.{$this->extension}";
     }
 
     public function url(): string
