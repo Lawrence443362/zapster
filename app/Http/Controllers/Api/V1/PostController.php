@@ -70,6 +70,7 @@ class PostController extends Controller
     {
         return DB::transaction(function () use ($request, $post) {
             $params = $request->validated();
+            $post->load('audio');
             $post->update($params);
 
             if ($request->has('tags')) {
@@ -78,7 +79,12 @@ class PostController extends Controller
                 $post->updateTags($tags);
             }
 
-            return new PostResource($post->load('tags'));
+            if ($request->hasFile("audio")) {
+                optional($post->audio)->forceDelete();
+                $post->storeAudioFile($request->file("audio"));
+            }
+
+            return new PostResource($post->load(['tags', 'audio']));
         });
     }
 

@@ -43,7 +43,8 @@ class UpdatePostRequest extends FormRequest
             "description" => ["string"],
             "status" => ["string", new Enum(PostStatus::class)],
             'tags' => ['array', 'distinct'],
-            'tags.*' => ['string']
+            'tags.*' => ['string'],
+            'audio' => ['nullable', 'file', 'mimetypes:audio/mpeg', 'max:20480']
         ];
     }
 }
