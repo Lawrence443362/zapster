@@ -3,6 +3,9 @@ start:
     # compose run dev
     # php artisan serve
 
+console:
+    php artisan tinker
+
 stop:
 	docker compose down
 
@@ -33,6 +36,7 @@ assets-install:
 
 assets-build:
 	docker-compose exec node-cli npm run build
+
 
 
 # ------------
