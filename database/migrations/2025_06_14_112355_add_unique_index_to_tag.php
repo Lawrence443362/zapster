@@ -18,8 +18,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::table('tags', function (Blueprint $table) {
-            //
-        });
+        DB::statement('DROP INDEX tags_name_lower_unique;');
     }
 };
