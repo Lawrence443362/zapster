@@ -64,6 +64,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function createPost(array $data): Post
+    {
+        return $this->posts()->create($data);
+    }
     /**
      * Get the attributes that should be cast.
      *

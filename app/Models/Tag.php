@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\QueryFilters\TagFilter;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  *
@@ -29,6 +32,19 @@ class Tag extends Model
     protected $fillable = [
         "name"
     ];
+
+    public static function createAllNewTags(array $tags_data): Collection
+    {
+        $tags = collect($tags_data)
+            ->map([self::class, 'createOneTag']);
+
+        return $tags;
+    }
+
+    public static function createOneTag(string $name): Tag
+    {
+        return Tag::firstOrCreate(['name' => $name]);
+    }
 
     protected function name(): Attribute
     {

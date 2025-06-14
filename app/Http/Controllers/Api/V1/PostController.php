@@ -35,18 +35,15 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        return DB::transaction(function () use ($request) {
-            $post =
-                $request
-                    ->user()
-                    ->posts()
-                    ->create($request->validated());
+        $tags = $request->validated()["tags"];
+        $user = $request->user();
 
-            $tagIds = collect($request->validated()['tags'])
-                ->map(fn($tag) => strtolower(trim($tag)))
-                ->map(fn($tag) => Tag::firstOrCreate(['name' => $tag])->id);
+        return DB::transaction(function () use ($request, $tags, $user) {
+            $tags = Tag::createAllNewTags($tags);
 
-            $post->tags()->sync($tagIds);
+            $post = $user
+                ->createPost($request->validated())
+                ->attachTags($tags);
 
             return new PostResource($post->load('user:id,name'));
         });
