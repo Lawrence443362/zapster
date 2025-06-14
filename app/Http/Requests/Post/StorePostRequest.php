@@ -26,8 +26,10 @@ class StorePostRequest extends FormRequest
     {
         return [
             "title" => ["required", "string", "max:255"],
-            "description" => ["required"],
-            "status" => ["required", new Enum(PostStatus::class)]
+            "description" => ["required", "string", "max:255"],
+            "status" => ["required", new Enum(PostStatus::class)],
+            'tags' => ['required', 'array', 'min:1', 'distinct'],
+            'tags.*' => ['string'],
         ];
     }
 }

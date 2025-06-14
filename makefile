@@ -1,7 +1,7 @@
 start:
-    compose run dev
+	docker compose up --build -d
+    # compose run dev
     # php artisan serve
-	# docker compose up --build -d
 
 stop:
 	docker compose down

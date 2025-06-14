@@ -8,7 +8,9 @@ use App\Http\Resources\V1\PostResource;
 use App\Models\Post;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
+use App\Models\Tag;
 use App\QueryFilters\PostFilter;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PostController extends Controller
@@ -33,13 +35,21 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $post =
-            $request
-                ->user()
-                ->posts()
-                ->create($request->validated());
+        return DB::transaction(function () use ($request) {
+            $post =
+                $request
+                    ->user()
+                    ->posts()
+                    ->create($request->validated());
 
-        return new PostResource($post->load('user:id,name'));
+            $tagIds = collect($request->validated()['tags'])
+                ->map(fn($tag) => strtolower(trim($tag)))
+                ->map(fn($tag) => Tag::firstOrCreate(['name' => $tag])->id);
+
+            $post->tags()->sync($tagIds);
+
+            return new PostResource($post->load('user:id,name'));
+        });
     }
 
     /**
@@ -47,7 +57,7 @@ class PostController extends Controller
      */
     public function show(int $id)
     {
-        $post = Post::with("user:id,name")->findOrFail( $id);
+        $post = Post::with(['user:id,name', 'tags:id,name'])->findOrFail($id);
         return new PostResource($post);
     }
 
