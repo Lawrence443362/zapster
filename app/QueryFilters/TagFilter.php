@@ -11,8 +11,8 @@ class TagFilter
         return [
             AllowedFilter::partial('name'),
             AllowedFilter::exact('id'),
-            DateFilter::date_from(),
-            DateFilter::date_to()
+            DateFilter::DateFrom(),
+            DateFilter::DateTo()
         ];
     }
 }

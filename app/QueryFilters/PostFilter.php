@@ -12,8 +12,29 @@ class PostFilter
             AllowedFilter::partial('title'),
             AllowedFilter::exact('id'),
             AllowedFilter::exact('user_id'),
-            DateFilter::date_from(),
-            DateFilter::date_to()
+            DateFilter::DateFrom(),
+            DateFilter::DateTo(),
+            self::tagFilter()
         ];
+    }
+
+    public static function tagFilter(): AllowedFilter
+    {
+        return AllowedFilter::callback('tags', function ($query, $value) {
+            $tags = self::parseTags($value);
+
+            $query->whereHas('tags', function ($q) use ($tags) {
+                $q->whereIn('name', $tags);
+            }, '=', count($tags)); // пост должен иметь ВСЕ теги
+        });
+    }
+
+    private static function parseTags(string|array $tags): array
+    {
+        if (is_string($tags)) {
+            $tags = explode(',', $tags);
+        }
+
+        return array_map('trim', $tags);
     }
 }

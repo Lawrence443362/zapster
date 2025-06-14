@@ -6,7 +6,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 
 class DateFilter
 {
-    public static function date_from(): AllowedFilter
+    public static function DateFrom(): AllowedFilter
     {
         return AllowedFilter::callback(
             'date_from',
@@ -15,7 +15,7 @@ class DateFilter
         );
     }
 
-    public static function date_to(): AllowedFilter
+    public static function DateTo(): AllowedFilter
     {
         return AllowedFilter::callback(
             'date_to',
