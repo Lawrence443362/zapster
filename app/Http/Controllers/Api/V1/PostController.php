@@ -22,7 +22,7 @@ class PostController extends Controller
     public function index()
     {
         $per_page = request('per_page', 15);
-        $query = Post::with(["tags", "user:id,name"]);
+        $query = Post::with(["tags", "user:id,name", "audio"]);
         $posts = QueryBuilder::for($query)
             ->allowedSorts(["id", "title", "created_at"])
             ->allowedFilters(PostFilter::filters())
@@ -47,24 +47,7 @@ class PostController extends Controller
                 ->attachTags($tags);
 
             if ($request->hasFile("audio")) {
-                $file = $request->file("audio");
-
-                $storedName = (string) Str::uuid();
-                $folder = 'posts/audio';
-                $disk = config('filesystems.default');
-
-                $file->storeAs($folder, $storedName . '.' . $file->extension(), $disk);
-
-                $post->audio()->create([
-                    'original_name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
-                    'stored_name' => $storedName,
-                    'folder' => $folder,
-                    'disk' => $disk,
-                    'size' => $file->getSize(),
-                    'mime_type' => $file->getMimeType(),
-                    'extension' => $file->extension(),
-                    'duration' => null, // можно позже заполнить через ffmpeg
-                ]);
+                $post->storeAudioFile($request->file("audio"));
             }
 
             return new PostResource($post->load(['user:id,name', 'tags']));
@@ -76,7 +59,7 @@ class PostController extends Controller
      */
     public function show(int $id)
     {
-        $post = Post::with(['user:id,name', 'tags:id,name'])->findOrFail($id);
+        $post = Post::with(['user:id,name', 'tags:id,name', 'audio'])->findOrFail($id);
         return new PostResource($post);
     }
 

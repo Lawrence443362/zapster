@@ -24,7 +24,9 @@ class PostResource extends JsonResource
             "createdAt" => Carbon::parse($this->created_at)->format("Y-m-d H:i:s"),
             "authorName" => $this->whenLoaded("user" , fn() => $this->user->name),
             "user_id" => $this->user_id,
-            "tags" => $this->whenLoaded("tags", fn() => TagResource::collection($this->tags))
+            "tags" => $this->whenLoaded("tags", fn() => TagResource::collection($this->tags)),
+            "soundTrackName"=> $this->whenLoaded("audio", fn() => $this->audio->original_name),
+            "soundTrackPath"=> $this->whenLoaded("audio", fn() => $this->audio->url())
         ];
     }
 }

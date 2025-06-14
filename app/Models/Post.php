@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 /**
  *
@@ -59,6 +61,26 @@ class Post extends Model
         $this->tags()->sync($tags->pluck("id")->all());
 
         return $this;
+    }
+
+    public function storeAudioFile($file)
+    {
+        $storedName = (string) Str::uuid();
+        $folder = 'posts/audio';
+        $disk = config('filesystems.default');
+
+        $file->storeAs($folder, $storedName . '.' . $file->extension(), $disk);
+
+        $this->audio()->create([
+            'original_name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+            'stored_name' => $storedName,
+            'folder' => $folder,
+            'disk' => $disk,
+            'size' => $file->getSize(),
+            'mime_type' => $file->getMimeType(),
+            'extension' => $file->extension(),
+            'duration' => null, // можно позже заполнить через ffmpeg
+        ]);
     }
 
     public function user(): BelongsTo
