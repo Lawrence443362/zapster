@@ -66,9 +66,19 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->validated());
+        return DB::transaction(function () use ($request, $post) {
+            $post->update($request->validated());
 
-        return new PostResource($post);
+            if ($request->validated()['tags']) {
+                $tagIds = collect($request->validated()['tags'])
+                    ->map(fn($tag) => strtolower(trim($tag)))
+                    ->map(fn($tag) => Tag::firstOrCreate(['name' => $tag])->id);
+
+                $post->tags()->sync($tagIds);
+            }
+
+            return new PostResource($post);
+        });
     }
 
     /**
