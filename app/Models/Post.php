@@ -46,7 +46,14 @@ class Post extends Model
         "status" => PostStatus::class,
     ];
 
-    public function attachTags(Collection $tags)
+    public function attachTags(Collection $tags): static
+    {
+        $this->tags()->sync($tags->pluck("id")->all());
+
+        return $this;
+    }
+
+    public function updateTags(Collection $tags): static
     {
         $this->tags()->sync($tags->pluck("id")->all());
 

@@ -21,7 +21,7 @@ class PostController extends Controller
     public function index()
     {
         $per_page = request('per_page', 15);
-        $query = Post::with(["user:id,name"]);
+        $query = Post::with(["tags", "user:id,name"]);
         $posts = QueryBuilder::for($query)
             ->allowedSorts(["id", "title", "created_at"])
             ->allowedFilters(PostFilter::filters())
@@ -35,17 +35,17 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $tags = $request->validated()["tags"];
+        $params = $request->validated();
         $user = $request->user();
 
-        return DB::transaction(function () use ($request, $tags, $user) {
-            $tags = Tag::createAllNewTags($tags);
+        return DB::transaction(function () use ($request, $params, $user) {
+            $tags = Tag::createAllNewTags($params["tags"]);
 
             $post = $user
-                ->createPost($request->validated())
+                ->createPost($params)
                 ->attachTags($tags);
 
-            return new PostResource($post->load('user:id,name'));
+            return new PostResource($post->load(['user:id,name', 'tags']));
         });
     }
 
@@ -64,17 +64,16 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         return DB::transaction(function () use ($request, $post) {
-            $post->update($request->validated());
+            $params = $request->validated();
+            $post->update($params);
 
-            if ($request->validated()['tags']) {
-                $tagIds = collect($request->validated()['tags'])
-                    ->map(fn($tag) => strtolower(trim($tag)))
-                    ->map(fn($tag) => Tag::firstOrCreate(['name' => $tag])->id);
+            if ($request->has('tags')) {
+                $tags = Tag::createAllNewTags($params["tags"]);
 
-                $post->tags()->sync($tagIds);
+                $post->updateTags($tags);
             }
 
-            return new PostResource($post);
+            return new PostResource($post->load('tags'));
         });
     }
 
