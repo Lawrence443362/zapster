@@ -13,21 +13,6 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        $tags = [
-            'Rock',
-            'Jazz',
-            'Hip-Hop',
-            'Classical',
-            'Pop',
-            'Electronic',
-            'Reggae',
-            'Blues',
-            'Metal',
-            'Country',
-        ];
-
-        foreach ($tags as $name) {
-            Tag::create(['name' => $name]);
-        }
+        Tag::factory()->count(20)->create();
     }
 }
