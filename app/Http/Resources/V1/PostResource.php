@@ -23,6 +23,7 @@ class PostResource extends JsonResource
             "description" => $this->when(Route::currentRouteName() == 'posts.show', $this->description),
             "createdAt" => Carbon::parse($this->created_at)->format("Y-m-d H:i:s"),
             "authorName" => $this->whenLoaded("user" , fn() => $this->user->name),
+            "user_id" => $this->user_id,
             "tags" => $this->whenLoaded("tags", fn() => TagResource::collection($this->tags))
         ];
     }
