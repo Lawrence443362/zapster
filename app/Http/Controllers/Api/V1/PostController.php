@@ -11,6 +11,7 @@ use App\Http\Requests\Post\UpdatePostRequest;
 use App\Models\Tag;
 use App\QueryFilters\PostFilter;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PostController extends Controller
@@ -44,6 +45,27 @@ class PostController extends Controller
             $post = $user
                 ->createPost($params)
                 ->attachTags($tags);
+
+            if ($request->hasFile("audio")) {
+                $file = $request->file("audio");
+
+                $storedName = (string) Str::uuid();
+                $folder = 'posts/audio';
+                $disk = config('filesystems.default');
+
+                $file->storeAs($folder, $storedName . '.' . $file->extension(), $disk);
+
+                $post->audio()->create([
+                    'original_name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
+                    'stored_name' => $storedName,
+                    'folder' => $folder,
+                    'disk' => $disk,
+                    'size' => $file->getSize(),
+                    'mime_type' => $file->getMimeType(),
+                    'extension' => $file->extension(),
+                    'duration' => null, // можно позже заполнить через ffmpeg
+                ]);
+            }
 
             return new PostResource($post->load(['user:id,name', 'tags']));
         });

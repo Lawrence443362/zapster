@@ -3,6 +3,9 @@ start:
     # compose run dev
     # php artisan serve
 
+filelink:
+    php artisan storage:link
+    
 console:
     php artisan tinker
 
