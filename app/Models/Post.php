@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 /**
  *
@@ -44,6 +45,14 @@ class Post extends Model
     protected $casts = [
         "status" => PostStatus::class,
     ];
+
+    public function attachTags(Collection $tags)
+    {
+        $this->tags()->sync($tags->pluck("id")->all());
+
+        return $this;
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
