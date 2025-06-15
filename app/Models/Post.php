@@ -71,7 +71,7 @@ class Post extends Model
 
         $file->storeAs($folder, $storedName . '.' . $file->extension(), $disk);
 
-        $this->audio()->create([
+        return $this->audio()->create([
             'original_name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
             'stored_name' => $storedName,
             'folder' => $folder,

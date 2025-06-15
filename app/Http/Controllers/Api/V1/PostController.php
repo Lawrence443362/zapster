@@ -46,8 +46,10 @@ class PostController extends Controller
                 ->createPost($params)
                 ->attachTags($tags);
 
+            // dd($request->hasFile('audio'), $request->file('audio'), $_FILES);
+
             if ($request->hasFile("audio")) {
-                $post->storeAudioFile($request->file("audio"));
+                $post->storeAudioFile($request->file("audio"))->compressMp3();
             }
 
             return new PostResource($post->load(['user:id,name', 'tags']));

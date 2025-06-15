@@ -4,5 +4,7 @@ RUN apk add --no-cache libpq postgresql-dev \
     && docker-php-ext-install pdo_pgsql pgsql
 
 RUN apk add --no-cache ffmpeg
+RUN apk add --no-cache ffmpeg-libs lame
 
+ADD ./docker/php/php.ini /usr/local/etc/php/php.ini
 WORKDIR /var/www
