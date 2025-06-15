@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Post;
 
-use App\Models\PostStatus;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
 
-class StorePostRequest extends FormRequest
+class AttachAudioToPostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +22,7 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => ["required", "string", "max:255"],
-            "description" => ["required", "string", "max:255"],
-            "status" => ["required", new Enum(PostStatus::class)],
-            'tags' => ['required', 'array', 'min:1', 'distinct'],
-            'tags.*' => ['string']
+            'audio' => ['required', 'file', 'mimetypes:audio/mpeg', 'max:20480']
         ];
     }
 }

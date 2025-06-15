@@ -42,4 +42,23 @@ class PostService
             return $post;
         });
     }
+
+    public function attachAudio(Post $post, UploadedFile $file)
+    {
+        $audio = DB::transaction(function () use ($post, $file) {
+            $post->audio?->forceDelete();
+
+            $audio = $this->audioFileService
+                ->createAudioFileModel($file)
+                ->post()
+                ->associate($post);
+            $audio->save();
+
+            return $audio;
+        });
+
+        $this->audioFileService->storeFile($audio, $file);
+
+        return $audio;
+    }
 }

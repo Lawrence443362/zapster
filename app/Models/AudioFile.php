@@ -85,82 +85,9 @@ class AudioFile extends Model
         'duration' => 'float',
     ];
 
-
     public function post()
     {
         return $this->belongsTo(Post::class);
-    }
-
-    public function getAbsolutuFilePath(): string
-    {
-        return Storage::disk(name: $this->disk)->path($this->getRelativePath());
-    }
-
-    public function getRelativeCompressedFilePath(): string
-    {
-        return "{$this->compressed_folder}/{$this->stored_name}.{$this->extension}";
-    }
-
-    public function getAbsoluteCompressedFilePath(): string
-    {
-        return Storage::disk($this->disk)->path($this->getRelativePath());
-    }
-
-    public function getUrl(): string
-    {
-        if ($this->is_compressed) {
-            return $this->getCompressedFileUrl();
-        } else {
-            return $this->getFileUrl();
-        }
-    }
-
-    public function getFileUrl(): string
-    {
-        return Storage::disk(name: $this->disk)->getUrl($this->getRelativePath());
-    }
-
-    public function getCompressedFileUrl(): string
-    {
-        return Storage::disk(name: $this->disk)->getUrl($this->getRelativePath());
-    }
-
-    public function generateRelativeCompressedFilePath(): string
-    {
-        $uuid = Str::uuid()->toString();
-        return "posts/audio_compressed/{$this->stored_name}.{$this->extension}";
-    }
-
-    public function generateAbsoluteCompressedFilePath($disk): string
-    {
-        return Storage::disk($disk)->path($this->generateRelativeCompressedFilePath());
-    }
-
-    public function compressMp3(): string
-    {
-        $inputPath = $this->getAbsolutuFilePath();
-        $outputPath = $this->generateAbsoluteCompressedFilePath(config('filesystems.default'));
-        $command = "ffmpeg -y -i \"$inputPath\" -c:a libmp3lame -b:a 128k \"$outputPath\" 2>&1";
-
-        exec($command, $outputLog, $returnCode);
-
-        if ($returnCode !== 0) {
-            // Лог ошибки если ffmpeg сломался
-            Log::error("FFmpeg error:", $outputLog);
-            throw new \Exception("FFmpeg failed. Check logs.");
-        }
-
-        $this->update([
-            'is_compressed' => true,
-            'size' => Storage::disk($this->disk)->size(path: $outputPath)
-        ]);
-
-        return $this;
-    }
-
-    public function getFullStoredName(): string
-    {
-        return "{$this->stored_name}.{$this->extension}";
     }
 
     /**

@@ -20,6 +20,7 @@ Route::prefix('/v1')
         Route::get('/auth/logout', [AuthController::class, 'logout'])->name('user.logout');
         Route::get('/auth/profile', fn(Request $request) => Auth::user());
         Route::apiResource('tags', TagController::class, )->except(['store', 'update', 'destroy']);
+        Route::post('/posts/attach_audio/{id}', [PostController::class,'attachAudio'])->name('posts.attachAudio');
         Route::apiResource('posts', PostController::class);
     });
 
