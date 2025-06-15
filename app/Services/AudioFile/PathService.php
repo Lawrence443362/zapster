@@ -31,18 +31,18 @@ class PathService
      * Возвращает путь к аудиофайлу (относительный или абсолютный).
      *
      * @param AudioFile $audioFile Экземпляр аудиофайла.
-     * @param bool $isCompressedFile Указывает, нужно ли получить путь к сжатому файлу.
+     * @param bool $forCompressedFile Указывает, нужно ли получить путь к сжатому файлу.
      * @param bool $fullPath Указывает, нужно ли вернуть абсолютный путь в файловой системе.
      * @return string Путь к файлу.
      *
      * @throws \Exception Если указан сжатый файл, но он не существует.
      */
-    public function getPath(AudioFile $audioFile, bool $isCompressedFile = false, bool $fullPath = false): string
+    public function getPath(AudioFile $audioFile, bool $forCompressedFile = false, bool $fullPath = false): string
     {
-        $relativePath = $this->getRelativePath($audioFile, $isCompressedFile);
+        $relativePath = $this->getRelativePath($audioFile, $forCompressedFile);
 
         if ($fullPath) {
-            $disk = $this->getDisc($audioFile, $isCompressedFile);
+            $disk = $this->getDisc($audioFile, $forCompressedFile);
 
             return $this->storage->disk($disk)->path($relativePath);
         } else {
@@ -54,14 +54,14 @@ class PathService
      * Возвращает относительный путь к файлу.
      *
      * @param AudioFile $audioFile Экземпляр аудиофайла.
-     * @param bool $isCompressedFile Указывает, нужно ли получить путь к сжатому файлу.
+     * @param bool $forCompressedFile Указывает, нужно ли получить путь к сжатому файлу.
      * @return string Относительный путь.
      *
      * @throws \Exception Если файл не сжат, но запрошен путь к сжатой версии.
      */
-    public function getRelativePath(AudioFile $audioFile, bool $isCompressedFile = false): string
+    public function getRelativePath(AudioFile $audioFile, bool $forCompressedFile = false): string
     {
-        $folder = $this->getFolder($audioFile, $isCompressedFile);
+        $folder = $this->getFolder($audioFile, $forCompressedFile);
         $relativePath = "/{$folder}/{$audioFile->stored_name}.{$audioFile->extension}";
 
         return $relativePath;
