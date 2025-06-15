@@ -17,20 +17,30 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property string $title
  * @property string $description
- * @property string $status
+ * @property \App\Models\PostStatus $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \App\Models\AudioFile|null $audio
+ * @property-read \App\Models\PostTag|null $pivot
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Tag> $tags
+ * @property-read int|null $tags_count
+ * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Post onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Post whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Post withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Post withoutTrashed()
  * @mixin \Eloquent
  */
 class Post extends Model
@@ -90,7 +100,7 @@ class Post extends Model
 
     public function audio(): HasOne
     {
-        return $this->hasOne(PostAudio::class);
+        return $this->hasOne(AudioFile::class);
     }
 
     public function tags(): BelongsToMany
