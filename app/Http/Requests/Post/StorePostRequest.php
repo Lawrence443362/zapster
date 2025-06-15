@@ -29,8 +29,8 @@ class StorePostRequest extends FormRequest
             "description" => ["required", "string", "max:255"],
             "status" => ["required", new Enum(PostStatus::class)],
             'tags' => ['required', 'array', 'min:1', 'distinct'],
-            'tags.*' => ['string'],
-            'audio' => ['nullable', 'file', 'mimetypes:audio/mpeg', 'max:20480']
+            'tags.*' => ['string']
+            // 'audio' => ['required', 'file', 'mimetypes:audio/mpeg', 'max:20480']
         ];
     }
 }

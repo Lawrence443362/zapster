@@ -10,12 +10,18 @@ use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Models\Tag;
 use App\QueryFilters\PostFilter;
+use App\Services\PostService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class PostController extends Controller
 {
+    public PostService $service;
+    public function __construct(PostService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -36,24 +42,9 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request)
     {
-        $params = $request->validated();
-        $user = $request->user();
+        $post = $this->service->store($request->user(), $request->validated());
 
-        return DB::transaction(function () use ($request, $params, $user) {
-            $tags = Tag::createAllNewTags($params["tags"]);
-
-            $post = $user
-                ->createPost($params)
-                ->attachTags($tags);
-
-            // dd($request->hasFile('audio'), $request->file('audio'), $_FILES);
-
-            if ($request->hasFile("audio")) {
-                $post->storeAudioFile($request->file("audio"))->compressMp3();
-            }
-
-            return new PostResource($post->load(['user:id,name', 'tags']));
-        });
+        return new PostResource($post->load(['user:id,name', 'tags']));
     }
 
     /**
@@ -70,24 +61,9 @@ class PostController extends Controller
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
-        return DB::transaction(function () use ($request, $post) {
-            $params = $request->validated();
-            $post->load('audio');
-            $post->update($params);
+        $post = $this->service->update($request->user(), $post, $request->validated());
 
-            if ($request->has('tags')) {
-                $tags = Tag::createAllNewTags($params["tags"]);
-
-                $post->updateTags($tags);
-            }
-
-            if ($request->hasFile("audio")) {
-                optional($post->audio)->forceDelete();
-                $post->storeAudioFile($request->file("audio"));
-            }
-
-            return new PostResource($post->load(['tags', 'audio']));
-        });
+        return new PostResource($post->load(['user:id,name', 'tags', 'audio']));
     }
 
     /**

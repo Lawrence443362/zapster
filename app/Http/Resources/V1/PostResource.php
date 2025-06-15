@@ -26,8 +26,7 @@ class PostResource extends JsonResource
             "user_id" => $this->user_id,
             "tags" => $this->whenLoaded("tags", fn() => TagResource::collection($this->tags)),
             "soundTrackName" => $this->whenLoaded("audio", fn() => $this->audio->original_name),
-            "soundTrackPath" => $this->whenLoaded("audio", fn() => $this->audio->getUrl()),
-            // "is_compressed" => $this->whenLoaded("audio", fn() => $this->audio->is_compressed),
+            "soundTrackPath" => $this->whenLoaded("audio", fn() => $this->audio->getUrl())
         ];
     }
 }
