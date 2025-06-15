@@ -1,5 +1,6 @@
 services:
     nginx:
+        container_name: zapster-nginx
         build:
             context: ./
             dockerfile: docker/nginx.docker
@@ -11,6 +12,7 @@ services:
         depends_on:
             - php-fpm
     php-fpm:
+        container_name: zapster-php-fpm
         build:
             context: ./
             dockerfile: docker/php-fpm.docker
@@ -27,6 +29,7 @@ services:
             - postgres
             - redis
     php-cli:
+        container_name: zapster-php-cli
         build:
             context: ./
             dockerfile: ./docker/php-cli.docker
@@ -44,6 +47,7 @@ services:
             REDIS_HOST: redis
         tty: true
     composer:
+        container_name: zapster-composer
         image: composer:2.8.9
         working_dir: /var/www
         volumes:
@@ -52,6 +56,7 @@ services:
         # stdin_open: true   # <-- Это важно для интерактивных сессий
         command: bash
     postgres:
+        container_name: zapster-postgres
         image: postgres:11.2-alpine
         volumes:
             - ./storage/docker/postgresql/data:/var/lib/postgresql/data
@@ -62,6 +67,7 @@ services:
         ports:
             - 54320:5432
     redis:
+        container_name: zapster-redis
         image: redis:7.4.4-alpine3.21
         ports:
             - 63791:6379
