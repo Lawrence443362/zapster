@@ -13,6 +13,9 @@ class TagSeeder extends Seeder
      */
     public function run(): void
     {
-        Tag::factory()->count(20)->create();
+        for ($i = 0; $i < 20; $i++) {
+            $tag = Tag::factory()->make();
+            Tag::firstOrCreate(['name' => $tag->name]);
+        }
     }
 }

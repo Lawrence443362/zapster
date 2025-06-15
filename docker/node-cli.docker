@@ -1,0 +1,3 @@
+FROM node:iron-alpine
+    
+WORKDIR /var/www 

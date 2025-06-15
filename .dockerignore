@@ -1,0 +1,32 @@
+# Исключаем зависимости, которые можно установить в контейнере
+node_modules
+vendor
+
+# Исключаем систему контроля версий
+.git
+.gitignore
+
+# Исключаем документацию и тесты
+docs
+tests
+*.md
+
+# Исключаем IDE и редакторские файлы
+*.log
+*.swp
+*.swo
+*.bak
+*.tmp
+.idea
+.vscode
+
+# Исключаем временные файлы и кеш
+.env
+.env.*
+*.cache
+*.DS_Store
+
+# Исключаем конфиги для CI и утилит
+docker-compose.yml
+docker-compose*.yml
+Dockerfile*

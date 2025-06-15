@@ -9,6 +9,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Route;
 
 class PostResource extends JsonResource
+
 {
     /**
      * Transform the resource into an array.

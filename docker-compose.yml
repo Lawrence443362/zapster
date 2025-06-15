@@ -1,0 +1,67 @@
+services:
+    nginx:
+        build:
+            context: ./
+            dockerfile: docker/nginx.docker
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/ssl:/etc/nginx/ssl
+        ports:
+            - 8080:443
+        depends_on:
+            - php-fpm
+    php-fpm:
+        build:
+            context: ./
+            dockerfile: docker/php-fpm.docker
+        volumes:
+            - ./:/var/www
+        environment:
+            DB_PORT: 5432
+            DB_HOST: postgres
+            DB_USERNAME: user
+            DB_PASSWORD: user
+            REDIS_PORT: 6379
+            REDIS_HOST: redis
+        depends_on:
+            - postgres
+            - redis
+    php-cli:
+        build:
+            context: ./
+            dockerfile: ./docker/php-cli.docker
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - postgres
+            - redis
+        environment:
+            DB_PORT: 5432
+            DB_HOST: postgres
+            DB_USERNAME: user
+            DB_PASSWORD: user
+            REDIS_PORT: 6379
+            REDIS_HOST: redis
+        tty: true
+    composer:
+        image: composer:2.8.9
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        tty: true
+        # stdin_open: true   # <-- Это важно для интерактивных сессий
+        command: bash
+    postgres:
+        image: postgres:11.2-alpine
+        volumes:
+            - ./storage/docker/postgresql/data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: user
+            POSTGRES_DB: zapster
+        ports:
+            - 54320:5432
+    redis:
+        image: redis:7.4.4-alpine3.21
+        ports:
+            - 63791:6379
