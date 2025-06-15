@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\AudioFile;
 
 use App\Models\AudioFile;
 use App\Services\AudioFile\FFMpegRunner;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
  *
  * Получает пути к исходному и выходному файлу, затем вызывает процесс сжатия.
  */
-class FileCompressorService
+class AudioFileCompressorService
 {
     /**
      * @var PathService Сервис для получения полного пути к файлу.

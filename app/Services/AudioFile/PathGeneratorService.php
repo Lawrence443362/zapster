@@ -75,7 +75,7 @@ class PathGeneratorService
      * @param bool $forCompressedFile Указывает, нужен ли диск для сжатого файла.
      * @return string Имя диска.
      */
-    public function getDisc(bool $forCompressedFile): string
+    public function getDisc(bool $forCompressedFile = false): string
     {
         if ($forCompressedFile) {
             return $this->compressedDisk;
@@ -90,7 +90,7 @@ class PathGeneratorService
      * @param bool $forCompressedFile Указывает, нужна ли папка для сжатого файла.
      * @return string Имя папки.
      */
-    public function getFolder(bool $forCompressedFile): string
+    public function getFolder(bool $forCompressedFile = false): string
     {
         if ($forCompressedFile) {
             return $this->compressedFolder;
