@@ -3,13 +3,30 @@
 namespace App\Services\AudioFile;
 
 use App\Models\AudioFile;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem\Factory as StorageFactory;
 
 /**
  * Сервис для работы с путями к аудиофайлам (оригинальным и сжатым).
  */
 class PathService
 {
+    /**
+     * Фабрика для получения дисков хранения файлов.
+     *
+     * @var StorageFactory
+     */
+    private StorageFactory $storage;
+
+    /**
+     * Конструктор.
+     *
+     * @param StorageFactory $storage Фабрика для работы с файловой системой.
+     */
+    public function __construct(StorageFactory $storage)
+    {
+        $this->storage = $storage;
+    }
+
     /**
      * Возвращает путь к аудиофайлу (относительный или абсолютный).
      *
@@ -27,7 +44,7 @@ class PathService
         if ($fullPath) {
             $disk = $this->getDisc($audioFile, $isCompressedFile);
 
-            return Storage::disk($disk)->path($relativePath);
+            return $this->storage->disk($disk)->path($relativePath);
         } else {
             return $relativePath;
         }
