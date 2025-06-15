@@ -76,7 +76,7 @@ class PathService
      *
      * @throws \Exception Если файл не сжат, но запрошен диск для сжатой версии.
      */
-    public function getDisc(AudioFile $audioFile, bool $forCompressedFile): string|null
+    public function getDisc(AudioFile $audioFile, bool $forCompressedFile = false): string|null
     {
         if (!$forCompressedFile) {
             return $audioFile->disk;

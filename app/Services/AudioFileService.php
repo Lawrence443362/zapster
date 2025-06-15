@@ -6,8 +6,10 @@ use App\Contracts\UuidGeneratorInterface;
 use App\Factories\AudioFileFactory;
 use App\Models\AudioFile;
 use App\Services\AudioFile\PathGeneratorService;
+use App\Services\AudioFile\PathService;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Contracts\Filesystem\Factory as StorageFactory;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Сервис для работы с аудиофайлами: создание модели и сохранение файла.
@@ -18,6 +20,11 @@ class AudioFileService
      * @var PathGeneratorService Сервис генерации путей для хранения файлов.
      */
     public PathGeneratorService $pathGeneratorService;
+
+    /**
+     * @var PathService Сервис для работы с путями файла.
+     */
+    public PathService $pathService;
 
     /**
      * @var UuidGeneratorInterface Интерфейс генерации UUID.
@@ -44,11 +51,13 @@ class AudioFileService
      */
     public function __construct(
         PathGeneratorService $pathGeneratorService,
+        PathService $pathService,
         UuidGeneratorInterface $uuidGenerator,
         AudioFileFactory $audioFileFactory,
         StorageFactory $storageFactory
     ) {
         $this->pathGeneratorService = $pathGeneratorService;
+        $this->pathService = $pathService;
         $this->uuidGenerator = $uuidGenerator;
         $this->audioFileFactory = $audioFileFactory;
         $this->storageFactory = $storageFactory;
@@ -77,5 +86,33 @@ class AudioFileService
         $this->storageFactory
             ->disk($audioFile->disk)
             ->putFileAs($audioFile->folder, $file, $audioFile->getFullStoredName());
+    }
+
+    /**
+     * Удаляет и оригинальный, и сжатый файл (если он существует).
+     *
+     * @param AudioFile $audioFile
+     * @return void
+     */
+    public function deleteAllFiles(AudioFile $audioFile): void
+    {
+        $this->deleteFile($audioFile);
+        $this->deleteFile($audioFile, true);
+    }
+
+    /**
+     * Удаляет файл аудио.
+     *
+     * @param AudioFile $audioFile
+     * @return void
+     */
+    public function deleteFile(AudioFile $audioFile, bool $forCompressedFile = false): void
+    {
+        $disk = $this->pathService->getDisc($audioFile, $forCompressedFile);
+        $path = $this->pathService->getRelativePath($audioFile, $forCompressedFile);
+
+        $this->storageFactory->disk($disk)->delete($path);
+
+        Log::info("Audio file deleted", ['path' => $path, 'disk' => $disk]);
     }
 }
