@@ -9,7 +9,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Route;
 
 class PostResource extends JsonResource
-
 {
     /**
      * Transform the resource into an array.
@@ -23,11 +22,12 @@ class PostResource extends JsonResource
             "title" => $this->title,
             "description" => $this->when(Route::currentRouteName() == 'posts.show', $this->description),
             "createdAt" => Carbon::parse($this->created_at)->format("Y-m-d H:i:s"),
-            "authorName" => $this->whenLoaded("user" , fn() => $this->user->name),
+            "authorName" => $this->whenLoaded("user", fn() => $this->user->name),
             "user_id" => $this->user_id,
             "tags" => $this->whenLoaded("tags", fn() => TagResource::collection($this->tags)),
-            "soundTrackName"=> $this->whenLoaded("audio", fn() => $this->audio->original_name),
-            "soundTrackPath"=> $this->whenLoaded("audio", fn() => $this->audio->url())
+            "soundTrackName" => $this->whenLoaded("audio", fn() => $this->audio->original_name),
+            "soundTrackPath" => $this->whenLoaded("audio", fn() => $this->audio->url()),
+            // "is_compressed" => $this->whenLoaded("audio", fn() => $this->audio->is_compressed),
         ];
     }
 }

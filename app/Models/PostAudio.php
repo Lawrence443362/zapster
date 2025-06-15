@@ -24,6 +24,7 @@ class PostAudio extends Model
         'mime_type',
         'extension',
         'duration',
+        'is_compressed'
     ];
 
     protected $casts = [
