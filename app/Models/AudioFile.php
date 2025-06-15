@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Services\AudioFileService;
 use FFMpeg\FFMpeg;
 use FFMpeg\Format\Audio\Mp3;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -166,16 +168,9 @@ class AudioFile extends Model
      */
     protected static function booted(): void
     {
-        static::deleting(function (AudioFile $audio) {
-            if (!$audio->isForceDeleting()) {
-                return;
-            }
-
-            Storage::disk($audio->disk)->delete($audio->getRelativeFilePath());
-
-            if ($audio->is_compressed) {
-                Storage::disk($audio->compressed_disk)->delete($audio->getRelativeCompressedFilePath());
-            }
+        static::deleting(function (AudioFile $audioFile) {
+            $service = App::make(AudioFileService::class);
+            $service->deleteAllFiles($audioFile);
         });
     }
 }
