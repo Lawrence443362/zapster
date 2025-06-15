@@ -156,6 +156,11 @@ class AudioFile extends Model
         return $this;
     }
 
+    public function getFullStoredName(): string
+    {
+        return "{$this->stored_name}.{$this->extension}";
+    }
+
     /**
      * Удалить файл из хранилища при удалении модели.
      */
