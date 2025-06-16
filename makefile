@@ -1,24 +1,28 @@
 start:
-	docker compose up -d
+	docker-compose up -d
+
 console:
-	docker exec zapster-php-cli php artisan tinker
+	docker-compose run --rm php-cli php artisan tinker
+
 stop:
-	docker-compose down -v
-docker-down-clear:
-	docker-compose down -v --remove-orphans
+	docker-compose down --remove-orphans
+
 build:
-	make docker-down-clear
+	docker-compose down -v --remove-orphans
+	docker-compose down
 	docker-compose run --rm composer cp .env.example .env
 	docker-compose up --build -d
-	make php-deps-install
-	make php-generate-key
-	make migrate
-	docker exec zapster-php-cli php artisan db:seed
-	docker exec zapster-php-cli php artisan storage:link
-	docker-compose up --build -d
+	$(MAKE) php-deps-install
+	$(MAKE) php-generate-key
+	$(MAKE) migrate
+	docker-compose run --rm php-cli php artisan db:seed
+	docker-compose run --rm php-cli php artisan storage:link
+
 php-deps-install:
-	docker exec zapster-composer composer install
+	docker-compose run --rm composer composer install
+
 php-generate-key:
-	docker exec zapster-php-cli php artisan key:generate
+	docker-compose run --rm php-cli php artisan key:generate
+
 migrate:
-	docker exec zapster-php-cli php artisan migrate
+	docker-compose run --rm php-cli php artisan migrate
