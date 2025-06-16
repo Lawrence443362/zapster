@@ -10,8 +10,19 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group Authentication
+ *
+ * Контроллер, отвечающий за регистрацию, авторизацию и выход пользователя.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Зарегистрировать нового пользователя.
+     *
+     * @param  StoreUserRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function register(StoreUserRequest $request)
     {
         $user = User::create($request->validated());
@@ -19,6 +30,12 @@ class AuthController extends Controller
         return $this->respondWithToken($user);
     }
 
+    /**
+     * Войти в систему и получить токен.
+     *
+     * @param  LoginUserRequest  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(LoginUserRequest $request)
     {
         if (!Auth::attempt($request->validated())) {
@@ -32,6 +49,12 @@ class AuthController extends Controller
         return $this->respondWithToken($user);
     }
 
+    /**
+     * Выйти из системы (удалить текущий токен).
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -41,6 +64,12 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Сформировать ответ с токеном доступа.
+     *
+     * @param  User  $user
+     * @return \Illuminate\Http\JsonResponse
+     */
     private function respondWithToken(User $user)
     {
         $token = $user->createToken('api-token')->plainTextToken;
