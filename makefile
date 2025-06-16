@@ -1,10 +1,11 @@
 start:
-	docker compose up-d
+	docker compose up -d
 console:
 	docker exec zapster-php-cli php artisan tinker
 stop:
 	docker compose down
 build:
+    cp .env.example .env
 	docker-compose build
 	make php-deps-install
 	make php-generate-key
