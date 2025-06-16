@@ -12,7 +12,7 @@ build:
 	make migrate
 	docker exec zapster-php-cli php artisan db:seed
 	docker exec zapster-php-cli php artisan storage:link
-    docker-compose up --build -d
+	docker-compose up --build -d
 php-deps-install:
 	docker exec zapster-composer composer install
 php-generate-key:
