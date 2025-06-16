@@ -6,13 +6,13 @@ stop:
 	docker compose down
 build:
 	docker-compose run --rm composer cp .env.example .env
-	docker-compose build
+	docker-compose up --build -d
 	make php-deps-install
 	make php-generate-key
 	make migrate
 	docker exec zapster-php-cli php artisan db:seed
 	docker exec zapster-php-cli php artisan storage:link
-	make start
+    docker-compose up --build -d
 php-deps-install:
 	docker exec zapster-composer composer install
 php-generate-key:
