@@ -87,6 +87,23 @@ class AudioFile extends Model
         'duration' => 'float',
     ];
 
+    /**
+     * Получить имя файла с его расширением.
+     */
+    public function getFullStoredName(): string
+    {
+        return "{$this->stored_name}.{$this->extension}";
+    }
+
+    public function compressed($compressed_disk, $compressed_folder)
+    {
+        $this->is_compressed = true;
+        $this->compressed_disk = $compressed_disk;
+        $this->compressed_folder = $compressed_folder;
+
+        return $this;
+    }
+
     public function post()
     {
         return $this->belongsTo(Post::class);

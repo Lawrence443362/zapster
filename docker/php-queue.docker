@@ -1,4 +1,4 @@
-FROM php:8.4.7-fpm-alpine3.20
+FROM php:8.4.7-cli-alpine3.20
 
 RUN apk add --no-cache libpq postgresql-dev \
     && docker-php-ext-install pdo_pgsql pgsql
@@ -7,5 +7,4 @@ RUN apk add --no-cache ffmpeg
 RUN apk add --no-cache ffmpeg-libs lame
 RUN apk add --no-cache php-redis
 
-ADD ./docker/php/php.ini /usr/local/etc/php/php.ini
 WORKDIR /var/www

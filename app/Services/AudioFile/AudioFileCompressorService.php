@@ -55,7 +55,7 @@ class AudioFileCompressorService
      *
      * @throws \Exception Если ffmpeg завершился с ошибкой.
      */
-    public function compress(AudioFile $audioFile): void
+    public function compress(AudioFile $audioFile): array
     {
         $source = $this->pathService->getPath($audioFile, false, true);
         $output = $this->pathGeneratorService->generatePath($audioFile, true, true);
@@ -66,6 +66,14 @@ class AudioFileCompressorService
             Log::error("FFmpeg failed for file [{$audioFile->id}]: " . $e->getProcess()->getErrorOutput());
             throw new \RuntimeException("FFmpeg failed. Check logs.");
         }
+
+        Log::info("AudioFileCompressorService(AudioAttachedToPostEvent): FFmpeg success compress for audio file ID [{$audioFile->id}], file_name [{$audioFile->getFullStoredName()}]");
+
+        return [
+            "disc" => $this->pathGeneratorService->getDisc(true),
+            "folder" => $this->pathGeneratorService->getFolder(true),
+            "file_name" => $audioFile->getFullStoredName()
+        ];
     }
 }
 

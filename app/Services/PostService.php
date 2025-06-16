@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Events\AudioAttachedToPostEvent;
+use App\Models\AudioFile;
 use App\Models\Post;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Сервис для управления постами.
@@ -87,9 +90,9 @@ class PostService
      * @param UploadedFile $file Загруженный аудиофайл
      * @return \App\Models\AudioFile Модель аудиофайла
      */
-    public function attachAudio(Post $post, UploadedFile $file)
+    public function attachAudio(Post $post, UploadedFile $file): AudioFile
     {
-        $audio = DB::transaction(function () use ($post, $file) {
+        $audio = DB::transaction(function () use ($post, $file): AudioFile {
             $post->audio?->forceDelete();
 
             $audio = $this->audioFileService
@@ -102,6 +105,8 @@ class PostService
         });
 
         $this->audioFileService->storeFile($audio, $file);
+
+        event(new AudioAttachedToPostEvent($audio->id));
 
         return $audio;
     }

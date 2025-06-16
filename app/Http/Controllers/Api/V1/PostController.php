@@ -126,7 +126,7 @@ class PostController extends Controller
 
         $this->service->attachAudio($post, $request->file('audio'));
 
-        return new PostResource($post);
+        return new PostResource($post->load(['user:id,name', 'tags', 'audio']));
     }
 
     /**

@@ -1,4 +1,23 @@
 services:
+    queue:
+        container_name: zapster-queue
+        build:
+            context: ./
+            dockerfile: ./docker/php-queue.docker
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - postgres
+            - redis
+        environment:
+            DB_PORT: 5432
+            DB_HOST: postgres
+            DB_USERNAME: user
+            DB_PASSWORD: user
+            REDIS_PORT: 6379
+            REDIS_HOST: redis
+        command: php artisan queue:work redis --queue=audio_compressing_queue --sleep=3 --tries=3
+        restart: always
     nginx:
         container_name: zapster-nginx
         build:

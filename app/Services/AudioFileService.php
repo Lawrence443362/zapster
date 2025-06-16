@@ -97,7 +97,11 @@ class AudioFileService
     public function deleteAllFiles(AudioFile $audioFile): void
     {
         $this->deleteFile($audioFile);
-        $this->deleteFile($audioFile, true);
+
+        // Если есть сжатый файлик, то его тоже удаляем
+        if ($audioFile->is_compressed) {
+            $this->deleteFile($audioFile, true);
+        }
     }
 
     /**

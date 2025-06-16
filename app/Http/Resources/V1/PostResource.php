@@ -52,6 +52,7 @@ class PostResource extends JsonResource
             "tags" => $this->whenLoaded("tags", fn() => TagResource::collection($this->tags)),
             "soundTrackName" => $this->whenLoaded("audio", fn() => $this->audio->original_name),
             "soundTrackPath" => $this->whenLoaded("audio", fn() => $this->getAudioUrl()),
+            "is_compressed" => $this->whenLoaded("audio", fn() => $this->audio->is_compressed),
         ];
     }
 
