@@ -4,10 +4,22 @@ namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Запрос на авторизацию пользователя.
+ *
+ * Валидирует входящие данные:
+ * - `email` — обязательный, должен быть валидным email-адресом;
+ * - `password` — обязательный, строка.
+ *
+ * Авторизация:
+ * Доступ открыт всем (в том числе неавторизованным), чтобы можно было войти в систему.
+ */
 class LoginUserRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Определяет, имеет ли пользователь право отправить этот запрос.
+     *
+     * @return bool
      */
     public function authorize(): bool
     {
@@ -15,15 +27,15 @@ class LoginUserRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Правила валидации для входа пользователя.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "email" => ["required", "email"],
-            "password" => ["required", "string"]
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
         ];
     }
 }

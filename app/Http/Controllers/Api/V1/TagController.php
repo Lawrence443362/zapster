@@ -10,6 +10,15 @@ use App\Http\Requests\Tag\UpdateTagRequest;
 use App\QueryFilters\TagFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * Контроллер управления тегами API v1.
+ *
+ * Предоставляет CRUD-функциональность для тегов, включая:
+ * - Список тегов с фильтрацией и сортировкой;
+ * - Создание, просмотр, обновление и удаление тега.
+ *
+ * Использует кастомные запросы валидации и QueryBuilder.
+ */
 class TagController extends Controller
 {
     /**

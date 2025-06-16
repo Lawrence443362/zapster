@@ -2,16 +2,26 @@
 
 namespace App\Models;
 
-use App\QueryFilters\TagFilter;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
-use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * 
+ * Моделька тегов
+ *
+ * @OA\Schema(
+ *   schema="User",
+ *   type="object",
+ *   title="User",
+ *   required={"id", "name", "email"},
+ *   @OA\Property(property="id", type="integer", example=1),
+ *   @OA\Property(property="name", type="string", example="Иван Иванов"),
+ *   @OA\Property(property="email", type="string", format="email", example="ivan@example.com"),
+ *   @OA\Property(property="email_verified_at", type="string", format="date-time", nullable=true),
+ *   @OA\Property(property="created_at", type="string", format="date-time"),
+ *   @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
  *
  * @property int $id
  * @property string $name
@@ -39,19 +49,33 @@ class Tag extends Model
         "name"
     ];
 
+    /**
+     * Создать или найти теги по массиву названий.
+     *
+     * @param array<int, string> $tags_data
+     * @return \Illuminate\Support\Collection<int, Tag>
+     */
     public static function createAllNewTags(array $tags_data): Collection
     {
-        $tags = collect($tags_data)
-            ->map([self::class, 'createOneTag']);
-
-        return $tags;
+        return collect($tags_data)->map([self::class, 'createOneTag']);
     }
 
+    /**
+     * Создать или найти тег по имени.
+     *
+     * @param string $name
+     * @return \App\Models\Tag
+     */
     public static function createOneTag(string $name): Tag
     {
         return Tag::firstOrCreate(['name' => $name]);
     }
 
+    /**
+     * Мутатор для name — приведение к нижнему регистру и удаление пробелов.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
     protected function name(): Attribute
     {
         return Attribute::make(
@@ -59,6 +83,11 @@ class Tag extends Model
         );
     }
 
+    /**
+     * Получить посты, связанные с этим тегом.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function posts()
     {
         return $this->belongsToMany(Post::class)->using(PostTag::class)->withTimestamps();

@@ -13,16 +13,71 @@ use App\QueryFilters\PostFilter;
 use App\Services\PostService;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * Контроллер управления постами API v1.
+ *
+ * Этот контроллер предоставляет методы для:
+ * - отображения списка постов с фильтрацией и сортировкой;
+ * - создания, обновления и удаления постов;
+ * - привязки аудиофайлов;
+ * - получения одного поста.
+ *
+ * Использует сервисный слой PostService.
+ */
 class PostController extends Controller
 {
+    /**
+     * Сервис работы с постами.
+     *
+     * @var \App\Services\PostService
+     */
     public PostService $service;
+
+    /**
+     * Инициализирует контроллер с сервисом постов.
+     *
+     * @param  \App\Services\PostService  $service
+     */
     public function __construct(PostService $service)
     {
         $this->service = $service;
     }
 
     /**
-     * Display a listing of the resource.
+     * Отображает список постов с поддержкой пагинации, фильтрации и сортировки.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     *
+     * @description
+     * Метод возвращает постраничный список постов.
+     * Можно указать параметр `per_page` в запросе для изменения количества элементов на странице (по умолчанию 15).
+     *
+     * Подгружаются связи:
+     * - `tags` — теги поста;
+     * - `user` — автор поста (id, name);
+     * - `audio` — привязанное аудио, если есть.
+     *
+     * Поддерживается фильтрация через кастомный фильтр `PostFilter`.
+     * Доступные фильтры:
+     * - `title` (partial) — частичное совпадение по заголовку;
+     * - `id` (exact) — точное совпадение по идентификатору;
+     * - `user_id` (exact) — точное совпадение по пользователю;
+     * - `tags` — фильтрация по названиям тегов: `?filter[tags]=music,rock`;
+     * - `date_from` — посты, созданные после указанной даты;
+     * - `date_to` — посты, созданные до указанной даты.
+     *
+     * Сортировка возможна по следующим полям:
+     * - `id`
+     * - `title`
+     * - `created_at`
+     *
+     * Префикс `-` в сортировке означает порядок по убыванию:
+     * - `?sort=-created_at` — сначала новые посты.
+     *
+     * Примеры запросов:
+     * - `?filter[title]=Laravel` — посты с заголовком, содержащим "Laravel"
+     * - `?filter[tags]=music,rock` — посты с тегами "music" или "rock"
+     * - `?sort=-created_at&per_page=20` — новые посты, по 20 на страницу
      */
     public function index()
     {
@@ -37,7 +92,15 @@ class PostController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Создаёт новый пост.
+     *
+     * @param  \App\Http\Requests\Post\StorePostRequest  $request
+     * @return \App\Http\Resources\V1\PostResource
+     *
+     * @description
+     * Метод создаёт новый пост от имени текущего пользователя.
+     * Валидация данных выполняется через StorePostRequest.
+     * После создания загружаются связанные теги и пользователь.
      */
     public function store(StorePostRequest $request)
     {
@@ -47,7 +110,15 @@ class PostController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Привязывает аудиофайл к существующему посту.
+     *
+     * @param  \App\Http\Requests\Post\AttachAudioToPostRequest  $request
+     * @param  string  $id
+     * @return \App\Http\Resources\V1\PostResource
+     *
+     * @description
+     * Метод загружает и привязывает аудиофайл к посту по его идентификатору.
+     * Предварительно загружаются связи: пользователь, теги и текущее аудио.
      */
     public function attachAudio(AttachAudioToPostRequest $request, string $id)
     {
@@ -59,7 +130,14 @@ class PostController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Отображает информацию о конкретном посте.
+     *
+     * @param  int  $id
+     * @return \App\Http\Resources\V1\PostResource
+     *
+     * @description
+     * Метод возвращает подробную информацию о посте по его идентификатору.
+     * Подгружаются связи: автор (user), теги и привязанное аудио.
      */
     public function show(int $id)
     {
@@ -69,7 +147,15 @@ class PostController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновляет существующий пост.
+     *
+     * @param  \App\Http\Requests\Post\UpdatePostRequest  $request
+     * @param  \App\Models\Post  $post
+     * @return \App\Http\Resources\V1\PostResource
+     *
+     * @description
+     * Метод обновляет пост с новыми данными, переданными пользователем.
+     * После обновления подгружаются связи: автор, теги и аудио.
      */
     public function update(UpdatePostRequest $request, Post $post)
     {
@@ -79,7 +165,15 @@ class PostController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Удаляет указанный пост.
+     *
+     * @param  \App\Http\Requests\Post\DeletePostRequest  $request
+     * @param  \App\Models\Post  $post
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @description
+     * Метод удаляет пост.
+     * Возвращает сообщение об успешном удалении.
      */
     public function destroy(DeletePostRequest $request, Post $post)
     {

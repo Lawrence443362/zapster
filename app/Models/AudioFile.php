@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
+ * Модель аудиофайла, связанного с постом.
+ * Хранит оригинальные и сжатые версии аудиофайлов, а также информацию о файле.
  *
+ * При удалении модели автоматически удаляются связанные файлы с помощью AudioFileService.
  *
  * @property int $id
  * @property int $post_id
@@ -72,7 +75,6 @@ class AudioFile extends Model
         'disk',
         'compressed_folder',
         'compressed_disk',
-        'disk',
         'size',
         'mime_type',
         'extension',

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,7 +11,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- *
+ * Модель поста.
  *
  * @property int $id
  * @property string $title
@@ -59,6 +58,9 @@ class Post extends Model
         "status" => PostStatus::class,
     ];
 
+    /**
+     * Привязывает теги к посту (перезаписывает текущие связи).
+     */
     public function attachTags(Collection $tags): static
     {
         $this->tags()->sync($tags->pluck("id")->all());
@@ -66,43 +68,25 @@ class Post extends Model
         return $this;
     }
 
-    public function updateTags(Collection $tags): static
-    {
-        $this->tags()->sync($tags->pluck("id")->all());
-
-        return $this;
-    }
-
-    public function storeAudioFile($file)
-    {
-        $storedName = (string) Str::uuid();
-        $folder = 'posts/audio';
-        $disk = config('filesystems.default');
-
-        $file->storeAs($folder, $storedName . '.' . $file->extension(), $disk);
-
-        return $this->audio()->create([
-            'original_name' => pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME),
-            'stored_name' => $storedName,
-            'folder' => $folder,
-            'disk' => $disk,
-            'size' => $file->getSize(),
-            'mime_type' => $file->getMimeType(),
-            'extension' => $file->extension(),
-            'duration' => null, // можно позже заполнить через ffmpeg
-        ]);
-    }
-
+    /**
+     * Отношение с пользователем (владелец поста).
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Аудиофайл, прикреплённый к посту.
+     */
     public function audio(): HasOne
     {
         return $this->hasOne(AudioFile::class);
     }
 
+    /**
+     * Теги, прикреплённые к посту.
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class)->using(PostTag::class)->withTimestamps();

@@ -7,15 +7,23 @@ use App\Models\AudioFile;
 use App\Services\AudioFile\PathGeneratorService;
 use Illuminate\Http\UploadedFile;
 
+/**
+ * Фабрика для создания экземпляров AudioFile из загруженного файла.
+ */
 class AudioFileFactory
 {
     public function __construct(
         private PathGeneratorService $pathGeneratorService,
         private UuidGeneratorInterface $uuidGenerator
     ) {
-
     }
 
+    /**
+     * Создаёт модель AudioFile из загруженного файла.
+     *
+     * @param UploadedFile $file Загруженный пользователем аудиофайл
+     * @return AudioFile Не сохранённая модель AudioFile
+     */
     public function fromUploadedFile(UploadedFile $file): AudioFile
     {
         $uuid = $this->uuidGenerator->generate();
