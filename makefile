@@ -5,6 +5,7 @@ console:
 stop:
 	docker compose down
 build:
+	docker-compose down
 	docker-compose run --rm composer cp .env.example .env
 	docker-compose up --build -d
 	make php-deps-install
