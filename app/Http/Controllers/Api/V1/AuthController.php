@@ -21,12 +21,7 @@ class AuthController extends Controller
 
     public function login(LoginUserRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($request->validated())) {
             return response()->json([
                 "message" => "Wrong email or password"
             ], 401);
