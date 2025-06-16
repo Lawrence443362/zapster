@@ -16,7 +16,7 @@ build:
 	$(MAKE) php-generate-key
 	$(MAKE) migrate
 	docker-compose run --rm php-cli php artisan db:seed
-	docker-compose run --rm php-cli php artisan storage:link
+	docker-compose run --rm php-cli php artisan storage:link --force
 
 php-deps-install:
 	docker-compose run --rm composer composer install
