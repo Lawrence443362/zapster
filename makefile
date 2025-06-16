@@ -5,7 +5,7 @@ console:
 stop:
 	docker compose down
 build:
-	docker run --rm -v ./:/app --workdir=/app alpine cp ./.env.example ./.env
+	docker run --rm -v ${PWD}:/app --workdir=/app alpine cp ./.env.example ./.env
 	docker-compose build
 	make php-deps-install
 	make php-generate-key
