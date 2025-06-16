@@ -3,9 +3,9 @@ start:
 console:
 	docker exec zapster-php-cli php artisan tinker
 stop:
-	docker compose down
+	docker-compose down -v --remove-orphans
 build:
-	docker-compose down
+	make stop
 	docker-compose run --rm composer cp .env.example .env
 	docker-compose up --build -d
 	make php-deps-install
