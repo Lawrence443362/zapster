@@ -1,0 +1,711 @@
+{
+	"info": {
+		"_postman_id": "ee97dcd3-2d3a-4bf8-8bac-fd94d52f2c2d",
+		"name": "Zapster",
+		"description": "# 📘 Zapster API Collection\n\nКоллекция предназначена для тестирования API проекта **Zapster**.\n\n## ✅ Быстрый старт\n\n1. Выполни `Register` или `Login`, чтобы получить токен.\n    \n2. Токен будет автоматически сохранён в переменную `TOKEN`.\n    \n3. Остальные запросы (например, `Posts`, `Tags`) можно выполнять с авторизацией.\n    \n\n## 🔐 Переменные окружения\n\n- `BASE_URL` — адрес API, например: `https://localhost:8080`\n    \n- `TOKEN` — токен авторизации\n    \n\n## 📂 Секции\n\n- **User** — регистрация, вход, выход, профиль\n    \n- **Posts** — управление постами\n    \n- **Tags** — теги\n    \n\n## 🔧 Интеграция\n\nВсе запросы используют стандартные заголовки JSON и работают через Laravel API (v1).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30187779",
+		"_collection_link": "https://speeding-crater-216894.postman.co/workspace/81b36e14-4cd2-4fe3-8128-0bc5d175ecd0/collection/30187779-ee97dcd3-2d3a-4bf8-8bac-fd94d52f2c2d?action=share&source=collection_link&creator=30187779"
+	},
+	"item": [
+		{
+			"name": "Tags",
+			"item": [
+				{
+					"name": "Index",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/tags?page=1&sort=-id&per_page=100",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tags"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "sort",
+									"value": "-id"
+								},
+								{
+									"key": "filter[name]",
+									"value": "ic",
+									"disabled": true
+								},
+								{
+									"key": "filter[id]",
+									"value": "1,2,3,4,5,6",
+									"disabled": true
+								},
+								{
+									"key": "filter[date_from]",
+									"value": "2025-06-13 03:24:04",
+									"disabled": true
+								},
+								{
+									"key": "filter[date_to]",
+									"value": "2025-06-13 03:24:05",
+									"disabled": true
+								},
+								{
+									"key": "per_page",
+									"value": "100"
+								}
+							]
+						},
+						"description": "### Получить список тегов\n\nВозвращает постраничный список тегов.\n\n#### Параметры запроса:\n\n- `page` - номер страницы\n    \n- `per_page` — количество тегов на странице (по умолчанию 15)\n    \n- `filter[name]` — частичное совпадение по имени тега (LIKE %value%)\n    \n- `filter[id]` — точное совпадение по ID, можно передать как один ID, так и перечесление через запятию и без пробелов например `filter[id]=1,2,3`\n    \n- `filter[created_from]` — от даты создания\n    \n- `filter[created_to]` — до даты создания\n    \n- `sort` — сортировка по `name`, `created_at`, `id` (можно использовать `-` для убывания)\n    \n\nДаты можно указывать в виде 2025-06-13 03:24:04 или 2025-06-13\n\n#### Пример:\n\n```\nGET /api/v1/tags?per_page=10&sort=-created_at&filter[name]=rock\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/tags/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"tags",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "### Получить тэг по ID\n\nВозвращает данные одного тэга по ID.\n\n#### Пример:\n`GET /api/v1/tags/1`"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"item": [
+				{
+					"name": "Index",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Ответ содержит массив данных\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(Array.isArray(jsonData.data)).to.be.true;",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/posts?sort=-id&per_page=100",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "sort",
+									"value": "-id"
+								},
+								{
+									"key": "filter[id]",
+									"value": "123",
+									"disabled": true
+								},
+								{
+									"key": "per_page",
+									"value": "100"
+								},
+								{
+									"key": "filter[tags]",
+									"value": "soda,love,asdf",
+									"disabled": true
+								}
+							]
+						},
+						"description": "### Получить список постов\n\nВозвращает постраничный список постов.\n\n#### Подгружаемые связи:\n\n- `tags`\n    \n- `user` (id, name)\n    \n- `audio`\n    \n\n#### Параметры запроса:\n\n- `page` - номер страницы\n    \n- `per_page` — количество тегов на странице (по умолчанию 15)\n    \n\n#### Фильтры:\n\n- `title` — частичное совпадение по названию поста (LIKE %value%)\n    \n- `id`, `user_id` — точное совпадение\n    \n- `tags` — фильтрация по тегам: `?filter[tags]=music,rock`\n    \n- `date_from`, `date_to` — диапазон по дате создания\n    \n\n#### Сортировка:\n\n- `id`, `title`, `created_at` (добавь `-` перед полем — сортировка по убыванию)\n    \n\n#### Пример:\n\n```\nGET /api/v1/posts?filter[tags]=music&sort=-created_at&per_page=20\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Show",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/posts/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "54"
+								}
+							]
+						},
+						"description": "### Получить пост по ID\n\nВозвращает один пост по его ID.\n\n#### Пример URL:\n`GET /api/v1/posts/1`\n\n#### Ответ:\n```json\n{\n  \"id\": 1,\n  \"title\": \"Sample Post\",\n  \"description\": \"Some content\",\n  ...\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Post wthiout Audio",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Some data",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"type": "text"
+								},
+								{
+									"key": "tags[0]",
+									"value": "sodan",
+									"type": "text"
+								},
+								{
+									"key": "tags[1]",
+									"value": "love",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/posts",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts"
+							]
+						},
+						"description": "### 📤 Создание поста (POST /posts)\n\nСоздаёт новый пост с обязательными полями: заголовок, описание, статус и список тегов.\n\n#### 🔸 Поля запроса:\n\n| Поле | Тип | Обязательное | Описание |\n| --- | --- | --- | --- |\n| `title` | string | ✅ да | Заголовок поста (макс. 255 символов). |\n| `description` | string | ✅ да | Краткое описание поста (макс. 255 символов). |\n| `status` | string | ✅ да | Статус поста, должен соответствовать одному из значений enum `PostStatus`. |\n| `tags` | array | ✅ да | Массив тегов (мин. 1 элемент, все значения уникальны). |\n| `tags.\\\\\\\\\\*` | string | ✅ да | Каждое значение в массиве должно быть строкой. |\n\n#### 📦 Пример тела запроса (JSON):\n\n```\njsonCopyEdit{\n  \"title\": \"My first post\",\n  \"description\": \"This post is about music and feelings.\",\n  \"status\": \"active\",\n  \"tags\": [\"music\", \"love\"]\n}\n\n ```\n\n---\n\n#### ✅ Пример успешного ответа:\n\n```\njsonCopyEdit{\n    \"data\": {\n        \"id\": 43,\n        \"title\": \"Post wthiout Audio\",\n        \"createdAt\": \"2025-06-16 12:56:34\",\n        \"authorName\": \"Test User\",\n        \"user_id\": 1,\n        \"tags\": [\n            {\n                \"id\": 27,\n                \"name\": \"sodan\",\n                \"createAt\": \"2025-06-16 12:56:34\"\n            },\n            {\n                \"id\": 28,\n                \"name\": \"love\",\n                \"createAt\": \"2025-06-16 12:56:34\"\n            }\n        ]\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Patch",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"asdf\",\r\n    \"tags\": [\"asdf\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/posts/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "32"
+								}
+							]
+						},
+						"description": "### _📤 Обновить по_ст (POST /posts)\n\nОбновляет пост с заголовком, описанием, статусом и тегами.\n\n#### 🔸 Поля запроса:\n\n| Поле | Тип | Обязательное | Описание |\n| --- | --- | --- | --- |\n| `title` | string | нет | Заголовок поста (максимум 255 символов). |\n| `description` | string | нет | Описание поста. |\n| `status` | string | да | Статус поста. Должен соответствовать значениям enum `PostStatus(active, inactive)` |\n| `tags` | array | да | Массив тегов. Минимум 1 элемент, все теги должны быть уникальны. |\n| `tags.\\\\\\\\\\\\\\\\\\*` | string | да | Каждое значение в массиве должно быть строкой. При этом тэга может и не быть в БД, он создается автоматически в случае отсутствия в БД |\n\n---\n\n#### 📦 Пример тела запроса (JSON):\n\n```\njsonCopyEdit{\n  \"title\": \"My first post\",\n  \"description\": \"This post is about music and feelings.\",\n  \"status\": \"active\",\n  \"tags\": [\"music\", \"love\"]\n}\n\n ```\n\n---\n\n#### ✅ Пример успешного ответа:\n\n```\njsonCopyEdit{\n    \"data\": {\n        \"id\": 43,\n        \"title\": \"Post wthiout Audio\",\n        \"createdAt\": \"2025-06-16 12:56:34\",\n        \"authorName\": \"Test User\",\n        \"user_id\": 1,\n        \"tags\": [\n            {\n                \"id\": 27,\n                \"name\": \"sodan\",\n                \"createAt\": \"2025-06-16 12:56:34\"\n            },\n            {\n                \"id\": 28,\n                \"name\": \"love\",\n                \"createAt\": \"2025-06-16 12:56:34\"\n            }\n        ]\n    }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Attach Audio",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "audio",
+									"type": "file",
+									"src": "postman-cloud:///1f04a894-7166-43b0-ba81-cf6861c223c2"
+								},
+								{
+									"key": "audio",
+									"type": "file",
+									"src": "postman-cloud:///1f04a895-1d78-4860-ba1e-4eb332274db2",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/posts/attach_audio/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								"attach_audio",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "54"
+								}
+							]
+						},
+						"description": "### Прикрепить аудиофайл к посту\n\nЗагружает аудиофайл и связывает его с постом по ID.\n\n#### Поля формы:\n- `audio` (file, required)\n\n#### Пример:\n`POST /api/v1/posts/attach_audio/32`"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/posts/:id",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"posts",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "53"
+								}
+							]
+						},
+						"description": "### Удалить пост\n\nУдаляет пост по ID.\n\n#### Пример:\n`DELETE /api/v1/posts/33`\n\n#### Ответ:\n```json\n{\n  \"message\": \"Post deleted\"\n}\n```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('TOKEN', res.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "// Токен для авторизации проставляется автоматически, можно сразу дергать любые роуты.\r\n{\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"asdf@asdf7.com\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/register",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "### Регистрация пользователя\n\nРегистрирует нового пользователя и возвращает access token.\n\n#### Пример запроса:\n```json\n{\n  \"name\": \"John Doe\",\n  \"email\": \"user@example.com\",\n  \"password\": \"1234\"\n}\n```\n\n#### Ответ:\n```json\n{\n  \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"user@example.com\", ... },\n  \"token\": \"your-api-token\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('TOKEN', res.token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Есть токен\", function () {",
+									"    var res = pm.response.json();",
+									"    pm.expect(res.token).to.be.a('string');",
+									"    pm.environment.set(\"TOKEN\", res.token);",
+									"});"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "// Токен для авторизации проставляется автоматически, можно сразу дергать любые роуты.\r\n{\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/login/",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login",
+								""
+							]
+						},
+						"description": "### Авторизация пользователя\n\nВыполняет вход в систему и возвращает токен.\n\n#### Пример запроса:\n```json\n{\n  \"email\": \"user@example.com\",\n  \"password\": \"1234\"\n}\n```\n\n#### Ответ:\n```json\n{\n  \"user\": { \"id\": 1, \"name\": \"John Doe\", \"email\": \"user@example.com\", ... },\n  \"token\": \"your-api-token\"\n}\n```\n\n#### Ошибка 401:\n```json\n{\n  \"message\": \"Wrong email or password\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set('TOKEN', '');"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/logout",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "### Выход из системы\n\nУдаляет текущий access token.\n\n#### Ответ:\n```json\n{\n  \"message\": \"Logged out\"\n}\n```"
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{BASE_URL}}/api/v1/auth/profile",
+							"host": [
+								"{{BASE_URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"profile"
+							]
+						},
+						"description": "### Профиль пользователя\n\nВозвращает текущего аутентифицированного пользователя.\n\n#### Пример ответа:\n```json\n{\n  \"id\": 1,\n  \"name\": \"John Doe\",\n  \"email\": \"user@example.com\",\n  ...\n}\n```"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
