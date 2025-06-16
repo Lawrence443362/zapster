@@ -5,14 +5,14 @@ console:
 stop:
 	docker compose down
 build:
-    cp .env.example .env
+	docker run --rm -v ./:/app --workdir=/app alpine cp ./.env.example ./.env
 	docker-compose build
 	make php-deps-install
 	make php-generate-key
 	make migrate
-    docker exec zapster-php-cli php artisan db:seed
-    docker exec zapster-php-cli php artisan storage:link
-    make start
+	docker exec zapster-php-cli php artisan db:seed
+	docker exec zapster-php-cli php artisan storage:link
+	make start
 php-deps-install:
 	docker exec zapster-composer composer install
 php-generate-key:
