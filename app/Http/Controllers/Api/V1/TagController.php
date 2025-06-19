@@ -8,6 +8,7 @@ use App\Models\Tag;
 use App\Http\Requests\Tag\StoreTagRequest;
 use App\Http\Requests\Tag\UpdateTagRequest;
 use App\QueryFilters\TagFilter;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -62,11 +63,15 @@ class TagController extends Controller
      * Пример запроса с сортировкой и фильтрацией:
      * GET /api/v1/tags?per_page=10&sort=-created_at&filter[name]=rock
      */
-    public function index()
+    public function index(Request $request)
     {
-        $per_page = request("per_page", 15);
+        $validated = $request->validate([
+            'per_page' => 'nullable|int',
+        ]);
+
+        $per_page = request($validated['per_page'], 15);
         $tags = QueryBuilder::for(Tag::class)
-            ->allowedSorts(["name", "created_at", "id"])
+            ->allowedSorts(['name', 'created_at', 'id'])
             ->allowedFilters(TagFilter::filters())
             ->paginate($per_page);
 

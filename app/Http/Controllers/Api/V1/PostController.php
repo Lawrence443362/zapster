@@ -11,6 +11,7 @@ use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\QueryFilters\PostFilter;
 use App\Services\PostService;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -79,9 +80,13 @@ class PostController extends Controller
      * - `?filter[tags]=music,rock` — посты с тегами "music" или "rock"
      * - `?sort=-created_at&per_page=20` — новые посты, по 20 на страницу
      */
-    public function index()
+    public function index(Request $request)
     {
-        $per_page = request('per_page', 15);
+        $validated = $request->validate([
+            'per_page' => 'nullable|int',
+        ]);
+
+        $per_page = request($validated['per_page'], 15);
         $query = Post::with(["tags", "user:id,name", "audio"]);
         $posts = QueryBuilder::for($query)
             ->allowedSorts(["id", "title", "created_at"])
