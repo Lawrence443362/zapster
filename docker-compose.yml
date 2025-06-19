@@ -9,13 +9,6 @@ services:
         depends_on:
             - postgres
             - redis
-        environment:
-            DB_PORT: 5432
-            DB_HOST: postgres
-            DB_USERNAME: user
-            DB_PASSWORD: user
-            REDIS_PORT: 6379
-            REDIS_HOST: redis
         command: php artisan queue:work redis --queue=audio_compressing_queue --sleep=3 --tries=3
         restart: always
     nginx:
@@ -37,13 +30,6 @@ services:
             dockerfile: docker/php-fpm.docker
         volumes:
             - ./:/var/www
-        environment:
-            DB_PORT: 5432
-            DB_HOST: postgres
-            DB_USERNAME: user
-            DB_PASSWORD: user
-            REDIS_PORT: 6379
-            REDIS_HOST: redis
         depends_on:
             - postgres
             - redis
@@ -57,13 +43,6 @@ services:
         depends_on:
             - postgres
             - redis
-        environment:
-            DB_PORT: 5432
-            DB_HOST: postgres
-            DB_USERNAME: user
-            DB_PASSWORD: user
-            REDIS_PORT: 6379
-            REDIS_HOST: redis
         tty: true
     composer:
         container_name: zapster-composer
@@ -79,10 +58,6 @@ services:
         image: postgres:11.2-alpine
         volumes:
             - ./storage/docker/postgresql/data:/var/lib/postgresql/data
-        environment:
-            POSTGRES_USER: user
-            POSTGRES_PASSWORD: user
-            POSTGRES_DB: zapster
         ports:
             - 54320:5432
     redis:
