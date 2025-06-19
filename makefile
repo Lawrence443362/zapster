@@ -2,7 +2,7 @@ start:
 	docker-compose up -d
 
 console:
-	docker exec -it zapster-php-cli php artisan tinker
+	docker-compose run --rm php-cli php artisan tinker
 
 stop:
 	docker-compose down --remove-orphans
