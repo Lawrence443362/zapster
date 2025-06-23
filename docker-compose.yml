@@ -56,6 +56,10 @@ services:
     postgres:
         container_name: zapster-postgres
         image: postgres:11.2-alpine
+        environment:
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: user
+            POSTGRES_DB: zapster
         volumes:
             - ./storage/docker/postgresql/data:/var/lib/postgresql/data
         ports:
